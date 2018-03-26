@@ -1,6 +1,6 @@
 FROM python:3
 
-RUN pip install Scrapy
+RUN pip install Scrapy shub
 
 RUN mkdir /opt/scraper
 WORKDIR /opt/scraper
