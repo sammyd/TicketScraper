@@ -5,17 +5,18 @@ class TicketsSpider(scrapy.Spider):
   start_urls = [
     'http://www.atgtickets.com/shows/bloc-productions-presents-chitty-chitty-bang-bang/bristol-hippodrome/'
   ]
-  download_delay = 5
+  download_delay = 1
   
   def parse(self, response):
-    for show_href in response.xpath('//a[text()="Buy Tickets"]/@href').extract():
-      yield response.follow(show_href, callback=self.parse_show)
+    for i, show_href in enumerate(response.xpath('//a[text()="Buy Tickets"]/@href').extract()):
+      yield response.follow(show_href, meta={'cookiejar': i}, callback=self.parse_show)
 
   def parse_show(self, response):
     for section in response.css('div.item-box-item-details select.form-control').xpath('//option/@value').extract():
       yield scrapy.FormRequest.from_response(
         response,
         formdata={'BOset::WSmap::seatmap::screen_id' : section},
+        meta={'cookiejar': response.meta['cookiejar']},
         callback=self.parse_seats,
         formname='mapSelect'
       )
