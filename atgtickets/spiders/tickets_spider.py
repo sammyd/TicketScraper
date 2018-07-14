@@ -8,7 +8,7 @@ class TicketsSpider(scrapy.Spider):
   download_delay = 1
   
   def parse(self, response):
-    for i, show_href in enumerate(response.xpath('//a[text()="Buy Tickets"]/@href').extract()):
+    for i, show_href in enumerate(response.xpath('//a[contains(.,"Buy Tickets")]/@href').extract()):
       yield response.follow(show_href, meta={'cookiejar': i}, callback=self.parse_show)
 
   def parse_show(self, response):
